@@ -1,0 +1,110 @@
+# =========================
+# DEPENDÊNCIAS
+# =========================
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+
+# =========================
+# VARIÁVEIS DE AMBIENTE
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# LOGS
+# =========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# BUILD / DIST
+# =========================
+dist/
+build/
+out/
+
+# =========================
+# CACHE / TEMP
+# =========================
+.cache/
+.tmp/
+temp/
+.tmp/
+coverage/
+.nyc_output/
+
+# =========================
+# DATABASE
+# =========================
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# =========================
+# DOCKER
+# =========================
+docker-data/
+docker-volumes/
+**/docker-data/
+**/docker-volumes/
+
+# =========================
+# UPLOADS / FILES GERADOS
+# =========================
+uploads/
+public/uploads/
+storage/
+storage/**
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# EDITORES / IDEs
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+
+# =========================
+# TESTES
+# =========================
+coverage/
+test-results/
+playwright-report/
+
+# =========================
+# SEQUELIZE
+# =========================
+sequelize-meta.json
+
+# =========================
+# TYPESCRIPT (se usar futuramente)
+# =========================
+*.tsbuildinfo
+
+# =========================
+# MISC
+# =========================
+*.bak
+*.old
+*.tmp
+
+# =========================
+# KEY
+# =========================
+
+serviceAccountKey.json
