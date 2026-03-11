@@ -10,9 +10,11 @@ const __dirname = path.dirname(__filename);
 
 const uploadPath = path.resolve(__dirname, '..', '..', '..', 'uploads');
 
-// 🔹 helper para remover imagens do ess
+// 🔹 helper para remover imagens localmente se não for do cloudinary
 function deleteImage(filename) {
   if (!filename) return;
+  // Se for URL do Cloudinary, ignoramos a exclusão local (dá pra adicionar deleção no Cloudinary depois)
+  if (filename.startsWith('http')) return;
 
   const filePath = path.resolve(uploadPath, filename);
 
@@ -67,13 +69,13 @@ class CategoryController {
 
       if (existingCategory) {
         if (req.file) {
-          const filePath = path.resolve(__dirname, '..', '..', '..', 'uploads', req.file.filename);
-
-          fs.unlink(filePath, (err) => {
-            if (err) {
-              console.error('Erro ao remover imagem:', err.message);
-            }
-          });
+          // Se for url do cloudinary, ele já fez o upload, pra simplificar no deploy vamos só ignorar a falha ou a lógica seria apagar do cloud
+          if (!req.file.path?.startsWith('http')) {
+            const filePath = path.resolve(__dirname, '..', '..', '..', 'uploads', req.file.filename);
+            fs.unlink(filePath, (err) => {
+              if (err) console.error('Erro ao remover imagem:', err.message);
+            });
+          }
         }
 
         return res.status(409).json({ error: 'Category already exists' });
@@ -81,7 +83,8 @@ class CategoryController {
 
       const newCategory = await Category.create({
         name,
-        path: req.file ? req.file.filename : null,
+        // Usamos req.file.path (Cloudinary url) ou req.file.filename (disco local fallback)
+        path: req.file ? req.file.path || req.file.filename : null,
       });
 
       return res.status(201).json(newCategory);
@@ -154,7 +157,7 @@ class CategoryController {
       // 🔹 ATUALIZA DE FATO
       await category.update({
         name: name ?? category.name,
-        path: imageChanged ? req.file.filename : category.path,
+        path: imageChanged ? req.file.path || req.file.filename : category.path,
       });
 
       return res.status(200).json(category);

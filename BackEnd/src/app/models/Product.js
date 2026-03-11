@@ -27,8 +27,11 @@ class Product extends Model {
         url: {
           type: Sequelize.VIRTUAL,
           get() {
+            // Se já tiver http na string, é url do cloudinary, senão é fallback local (legado)
+            if (this.path && this.path.startsWith('http')) {
+              return this.path;
+            }
             return `http://localhost:3001/product-file/${this.path}`;
-            //Alterar em produção
           },
         },
       },

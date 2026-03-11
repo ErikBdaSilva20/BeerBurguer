@@ -14,10 +14,11 @@ const __dirname = path.dirname(__filename);
 const uploadPath = path.resolve(__dirname, '..', '..', '..', 'uploads');
 
 /*    🔹 HELPER PARA REMOVER IMAGEM
-   (EVITA LIXO NO SERVIDOR) */
+   (EVITA LIXO NO SERVIDOR, IGNORA SE FOR CLOUDINARY) */
 
 function deleteImage(filename) {
   if (!filename) return;
+  if (filename.startsWith('http')) return; // ignora se for URL do Cloudinary
 
   const filePath = path.resolve(uploadPath, filename);
 
@@ -93,9 +94,9 @@ class ProductController {
       await schema.validate(req.body, { abortEarly: false });
 
       const { name, price, category_id, offer } = req.body;
-      const { filename } = req.file || {};
+      const imagePath = req.file ? req.file.path || req.file.filename : null;
 
-      if (!filename) {
+      if (!imagePath) {
         return res.status(400).json({ error: 'Imagem é obrigatória' });
       }
 
@@ -103,7 +104,7 @@ class ProductController {
       const category = await Category.findByPk(category_id);
       if (!category) {
         // 🔥 LIMPA A IMAGEM SE A CATEGORIA FOR INVÁLIDA
-        deleteImage(filename);
+        deleteImage(imagePath);
 
         return res.status(404).json({ error: 'Categoria não encontrada' });
       }
@@ -113,7 +114,7 @@ class ProductController {
         name,
         price,
         category_id,
-        path: filename,
+        path: imagePath,
         offer,
       });
 
@@ -154,8 +155,8 @@ class ProductController {
       const product = await Product.findByPk(id);
 
       if (!product) {
-        // 🔥 SE VEIO IMAGEM, REMOVE
-        if (req.file) deleteImage(req.file.filename);
+        // 🔥 SE VEIO IMAGEM, REMOVE (IGNORADO SE FOR CLOUDINARY)
+        if (req.file) deleteImage(req.file.path || req.file.filename);
 
         return res.status(404).json({ error: 'Produto não encontrado' });
       }
@@ -165,7 +166,7 @@ class ProductController {
         const category = await Category.findByPk(category_id);
 
         if (!category) {
-          if (req.file) deleteImage(req.file.filename);
+          if (req.file) deleteImage(req.file.path || req.file.filename);
 
           return res.status(404).json({ error: 'Categoria não encontrada' });
         }
@@ -181,7 +182,7 @@ class ProductController {
         name: name ?? product.name,
         price: price ?? product.price,
         category_id: category_id ?? product.category_id,
-        path: req.file ? req.file.filename : product.path,
+        path: req.file ? req.file.path || req.file.filename : product.path,
         offer: offer ?? product.offer,
       });
 
