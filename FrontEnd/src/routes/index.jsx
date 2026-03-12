@@ -15,6 +15,7 @@ import {
   Menu,
   MyOrders,
   NewProduct,
+  NewCategory,
   NotFoundPage,
   Orders,
   Products,
@@ -48,6 +49,7 @@ export function Router() {
         <Route index element={<Dashboard />} />
         <Route path="produtos" element={<Products />} />
         <Route path="adicionar-produto" element={<NewProduct />} />
+        <Route path="adicionar-categoria" element={<NewCategory />} />
         <Route path="editar-produto" element={<EditProduct />} />
         <Route path="pedidos" element={<Orders />} />
       </Route>

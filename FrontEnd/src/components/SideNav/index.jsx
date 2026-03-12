@@ -40,6 +40,12 @@ const menuOptions = [
   },
   {
     id: 5,
+    label: 'Nova Categoria',
+    path: '/admin/adicionar-categoria',
+    icon: AddShoppingCartIcon,
+  },
+  {
+    id: 6,
     label: 'Home',
     path: '/',
     icon: HomeIcon,
@@ -66,7 +72,9 @@ export function SideNavAdmin() {
   const isSuperAdmin = userInfo?.email === 'erikborgesdasilva574@gmail.com';
   const visibleOptions = isSuperAdmin
     ? menuOptions
-    : menuOptions.filter((item) => item.path !== '/admin/adicionar-produto');
+    : menuOptions.filter(
+        (item) => item.path !== '/admin/adicionar-produto' && item.path !== '/admin/adicionar-categoria'
+      );
 
   return (
     <>

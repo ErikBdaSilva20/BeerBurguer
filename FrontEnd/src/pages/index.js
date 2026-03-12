@@ -7,4 +7,8 @@ export * from './Login';
 export * from './Menu';
 export * from './MyOrders';
 export * from './NotFound';
+export * from './Products';
+export * from './NewProduct';
+export * from './EditProduct';
 export * from './Register';
+export * from './NewCategory';
