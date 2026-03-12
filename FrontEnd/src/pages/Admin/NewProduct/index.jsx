@@ -1,26 +1,26 @@
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import CategoryIcon from '@mui/icons-material/Category';
+import ImageIcon from '@mui/icons-material/Image';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
+import { useUser } from '../../../hooks/UserContext';
+import { ErrorMessage } from '../../../layouts/AdminLayout/styles.js';
+import api from '../../../services/api.js';
 import {
   Container,
   Form,
   Input,
   InputGroup,
   Label,
-  SubmitButton,
   LabelUpload,
   Select,
+  SubmitButton,
 } from './styles.js';
-import { toast } from 'react-toastify';
-import ImageIcon from '@mui/icons-material/Image';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import CategoryIcon from '@mui/icons-material/Category';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import { useEffect, useState } from 'react';
-import api from '../../../services/api.js';
-import { ErrorMessage } from '../../../layouts/AdminLayout/styles.js';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from '../../../hooks/UserContext';
 
 /* =========================
    🔹 SCHEMA
@@ -143,7 +143,7 @@ export function NewProduct() {
                 setFilename(e.target.files?.[0]?.name || null);
               }}
             />
-            {filename || 'Nenhum arquivo'}
+            {filename}
           </LabelUpload>
           <ErrorMessage>{errors.file?.message}</ErrorMessage>
         </InputGroup>

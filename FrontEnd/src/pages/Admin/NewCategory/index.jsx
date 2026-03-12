@@ -1,23 +1,15 @@
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import {
-  Container,
-  Form,
-  Input,
-  InputGroup,
-  Label,
-  SubmitButton,
-  LabelUpload,
-} from './styles.js';
-import { toast } from 'react-toastify';
-import ImageIcon from '@mui/icons-material/Image';
 import CategoryIcon from '@mui/icons-material/Category';
+import ImageIcon from '@mui/icons-material/Image';
 import { useState } from 'react';
-import api from '../../../services/api.js';
-import { ErrorMessage } from '../../../layouts/AdminLayout/styles.js';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
 import { useUser } from '../../../hooks/UserContext';
+import { ErrorMessage } from '../../../layouts/AdminLayout/styles.js';
+import api from '../../../services/api.js';
+import { Container, Form, Input, InputGroup, Label, LabelUpload, SubmitButton } from './styles.js';
 
 /* =========================
    🔹 SCHEMA
@@ -105,7 +97,7 @@ export function NewCategory() {
                 setFilename(e.target.files?.[0]?.name || null);
               }}
             />
-            {filename || 'Nenhum arquivo'}
+            {filename}
           </LabelUpload>
           <ErrorMessage>{errors.file?.message}</ErrorMessage>
         </InputGroup>

@@ -10,9 +10,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { useUser } from '../../../hooks/UserContext';
 import api from '../../../services/api';
 import { formatPrice } from '../../../utils/formatPrice';
-import { useUser } from '../../../hooks/UserContext';
 import { CardChart, CardStat, Container, GridCharts, GridStats } from './styles';
 
 export function Dashboard() {
@@ -42,9 +42,9 @@ export function Dashboard() {
             { name: 'Coca-Cola 350ml', quantity: 52 },
             { name: 'Combo Especial', quantity: 41 },
             { name: 'Milkshake Chocolate', quantity: 38 },
-          ]
+          ],
         };
-        
+
         // Simular um pequeno delay de carregamento
         setTimeout(() => {
           setData(mockData);

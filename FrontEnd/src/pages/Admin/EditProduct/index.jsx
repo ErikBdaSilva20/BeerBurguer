@@ -1,32 +1,32 @@
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import CategoryIcon from '@mui/icons-material/Category';
 import ImageIcon from '@mui/icons-material/Image';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import CategoryIcon from '@mui/icons-material/Category';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import {
   Container,
+  DeleteButton,
+  Deletion,
   Form,
   Input,
   InputGroup,
   Label,
-  SubmitButton,
   LabelUpload,
   Select,
-  Deletion,
-  DeleteButton,
+  SubmitButton,
 } from './styles.js';
 
-import { toast } from 'react-toastify';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import api from '../../../services/api.js';
 import { useUser } from '../../../hooks/UserContext';
 import { ErrorMessage } from '../../../layouts/AdminLayout/styles.js';
+import api from '../../../services/api.js';
 
 /* =========================
    🔹 SCHEMA (EDIT)
@@ -191,7 +191,7 @@ export function EditProduct() {
                 setFilename(e.target.files?.[0]?.name || null);
               }}
             />
-            {filename || 'Nenhum arquivo selecionado'}
+            {filename}
           </LabelUpload>
           <ErrorMessage>{errors.file?.message}</ErrorMessage>
         </InputGroup>
