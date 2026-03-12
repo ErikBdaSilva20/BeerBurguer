@@ -47,6 +47,7 @@ export function Row({ row, setOrders, orders, activeStatus }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const { userInfo } = useUser();
+  const isSuperAdmin = userInfo?.email === 'erikborgesdasilva574@gmail.com';
 
   async function newStatusOrder(orderId, status) {
     // 1. Snapshot da ordem anterior para recuperação em caso de erro
@@ -88,7 +89,7 @@ export function Row({ row, setOrders, orders, activeStatus }) {
         <TableCell>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <StatusBadge $status={row.status}>{row.status}</StatusBadge>
-            {userInfo?.admin && (
+            {isSuperAdmin && (
               <SelectStatus
                 options={orderStatusOptions.filter((option) => option.id !== 0)}
                 value={orderStatusOptions.find((option) => option.value === row.status)}

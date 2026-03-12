@@ -20,6 +20,7 @@ export function Products() {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
   const { userInfo } = useUser();
+  const isSuperAdmin = userInfo?.email === 'erikborgesdasilva574@gmail.com';
 
   useEffect(() => {
     async function loadProducts() {
@@ -49,7 +50,7 @@ export function Products() {
               <TableCell align="center">Oferta</TableCell>
               <TableCell align="center">Imagem</TableCell>
               <TableCell align="center">Categoria ID</TableCell>
-              {userInfo?.admin && <TableCell align="center">Editar</TableCell>}
+              {isSuperAdmin && <TableCell align="center">Editar</TableCell>}
             </TableRow>
           </TableHead>
 
@@ -71,7 +72,7 @@ export function Products() {
                   <ProductImage src={product.url} alt={product.name} />
                 </TableCell>
                 <TableCell align="center">{product.category_id}</TableCell>
-                {userInfo?.admin && (
+                {isSuperAdmin && (
                   <TableCell align="center">
                     <ModeEditIcon className="icon" onClick={() => editProduct(product)} />
                   </TableCell>

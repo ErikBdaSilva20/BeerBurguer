@@ -63,7 +63,8 @@ export function SideNavAdmin() {
   }
 
   // Se não for admin, oculta a opção "Novo Produto" para apenas visualização
-  const visibleOptions = userInfo?.admin
+  const isSuperAdmin = userInfo?.email === 'erikborgesdasilva574@gmail.com';
+  const visibleOptions = isSuperAdmin
     ? menuOptions
     : menuOptions.filter((item) => item.path !== '/admin/adicionar-produto');
 

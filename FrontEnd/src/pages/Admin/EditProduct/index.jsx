@@ -53,6 +53,7 @@ export function EditProduct() {
   const [filename, setFilename] = useState(null);
   const [categories, setCategories] = useState([]);
   const { userInfo } = useUser();
+  const isSuperAdmin = userInfo?.email === 'erikborgesdasilva574@gmail.com';
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -224,10 +225,10 @@ export function EditProduct() {
           </div>
         </InputGroup>
 
-        {userInfo?.admin && <SubmitButton type="submit">Salvar alterações</SubmitButton>}
+        {isSuperAdmin && <SubmitButton type="submit">Salvar alterações</SubmitButton>}
       </Form>
 
-      {userInfo?.admin && (
+      {isSuperAdmin && (
         <Deletion>
           <DeleteButton className="delete" type="button" onClick={handleDelete}>
             Excluir produto

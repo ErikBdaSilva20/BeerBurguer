@@ -52,6 +52,7 @@ export function NewProduct() {
   const [filename, setFilename] = useState(null);
   const navigate = useNavigate();
   const { userInfo } = useUser();
+  const isSuperAdmin = userInfo?.email === 'erikborgesdasilva574@gmail.com';
 
   const {
     register,
@@ -171,7 +172,7 @@ export function NewProduct() {
           </div>
         </InputGroup>
 
-        {userInfo?.admin && <SubmitButton type="submit">Salvar</SubmitButton>}
+        {isSuperAdmin && <SubmitButton type="submit">Salvar</SubmitButton>}
       </Form>
     </Container>
   );

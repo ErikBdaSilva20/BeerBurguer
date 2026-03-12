@@ -21,11 +21,12 @@ export function Orders() {
 
   const [loading, setLoading] = useState(true);
   const { userInfo } = useUser();
+  const isSuperAdmin = userInfo?.email === 'erikborgesdasilva574@gmail.com';
 
   useEffect(() => {
     async function fetchOrders() {
       // Mock data for visitors
-      if (!userInfo?.admin) {
+      if (!isSuperAdmin) {
         const mockOrders = [
           {
             _id: '1',
