@@ -4,6 +4,7 @@ import { Op } from 'sequelize';
 import { fileURLToPath } from 'url';
 import * as Yup from 'yup';
 import Category from '../models/Category.js';
+import Product from '../models/Product.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -180,6 +181,37 @@ class CategoryController {
       return res.status(500).json({
         message: 'Erro ao buscar categorias',
       });
+    }
+  }
+
+  async delete(req, res) {
+    try {
+      const { id } = req.params;
+
+      const category = await Category.findByPk(id);
+
+      if (!category) {
+        return res.status(404).json({ error: 'Category not found' });
+      }
+
+      // 🔹 Bloquear deleção se houver produtos vinculados
+      const productsCount = await Product.count({ where: { category_id: id } });
+      if (productsCount > 0) {
+        return res.status(400).json({
+          error: 'Esta categoria possui produtos vinculados e não pode ser excluída.',
+        });
+      }
+
+      // Remove a imagem associada, se houver
+      if (category.path) {
+        deleteImage(category.path);
+      }
+
+      await category.destroy();
+
+      return res.status(200).json({ message: 'Category deleted successfully' });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
     }
   }
 }

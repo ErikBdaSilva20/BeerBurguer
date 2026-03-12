@@ -50,7 +50,7 @@ export function CategoriesCarousel() {
 
       <Carousel
         responsive={responsive}
-        infinite
+        infinite={true}
         draggable={false}
         autoPlaySpeed={3000}
         itemClass="carousel-item"

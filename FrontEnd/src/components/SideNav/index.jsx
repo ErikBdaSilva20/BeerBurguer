@@ -73,7 +73,8 @@ export function SideNavAdmin() {
   const visibleOptions = isSuperAdmin
     ? menuOptions
     : menuOptions.filter(
-        (item) => item.path !== '/admin/adicionar-produto' && item.path !== '/admin/adicionar-categoria'
+        (item) =>
+          item.path !== '/admin/adicionar-produto' && item.path !== '/admin/adicionar-categoria'
       );
 
   return (
@@ -88,7 +89,7 @@ export function SideNavAdmin() {
       <Overlay $isOpen={isOpen} onClick={() => setIsOpen(false)} />
 
       <Container $isOpen={isOpen}>
-        <Logo src={LogoImg} alt="Logo DevBurguer" />
+        <Logo src={LogoImg} alt="Logo DevBurguer" onClick={() => navigate('/')} />
         <div>
           {visibleOptions.map((item) => (
             <NavLink key={item.id} to={item.path} $isActive={pathname === item.path}>
