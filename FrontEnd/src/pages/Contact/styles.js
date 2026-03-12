@@ -172,7 +172,6 @@ export const MapSection = styled.div`
     width: 100%;
     height: 100%;
     border: none;
-    filter: grayscale(1) invert(0.9) contrast(1.2);
     opacity: 0.8;
   }
 

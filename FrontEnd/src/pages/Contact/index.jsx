@@ -18,18 +18,18 @@ import {
 export function Contact() {
   const contactInfo = {
     phones: [
-      { label: 'Suporte Geral', value: '+55 (11) 99999-9999' },
-      { label: 'Central de Entregas', value: '+55 (11) 88888-8888' },
+      { label: 'Me contrate', value: '+55 (54) 99956-6625' },
+      { label: 'Gostaria de conversar sobre essa página?', value: '+55 (54) 99956-6625' },
     ],
     emails: [
-      { label: 'Atendimento ao Cliente', value: 'contato@devburguer.com' },
-      { label: 'Parcerias & Eventos', value: 'comercial@devburguer.com' },
+      { label: 'Gostaria de um currículo?', value: 'erik.erik.silvadesenvolvedor@gmail.com' },
+      { label: 'Estou disponivel para trabalhos', value: 'erik.silvadesenvolvedor@gmail.com' },
     ],
     hours: [
       { label: 'Segunda a Quinta', value: '18:00 - 23:30' },
       { label: 'Sexta a Domingo', value: '18:00 - 01:00' },
     ],
-    address: 'Av. Paulista, 1000 - Bela Vista, São Paulo - SP, 01310-100',
+    address: 'Rua dos Bobos, 1000 - Holvania, Sistema de origem - Rs, 4002-8922',
   };
 
   return (
@@ -37,11 +37,11 @@ export function Contact() {
       <Content>
         <TitleSection>
           <h1>
-            Fale com a <span>Gente</span>
+            Fale com o <span>Desenvolvedor</span>
           </h1>
           <p>
-            Dúvidas, sugestões ou apenas quer falar sobre o melhor hambúrguer da cidade? Estamos
-            prontos para te ouvir.
+            Dúvidas, sugestões ou apenas quer falar sobre o este e-commerce? Entre em contato, estou
+            pronto para discutir com você sobre qualquer tema!
           </p>
         </TitleSection>
 
@@ -116,12 +116,12 @@ export function Contact() {
         <MapSection>
           <iframe
             title="Google Maps Location"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m12!1m3!1d3657.0658305016595!2d-46.653154823758245!3d-23.564299961266396!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59c8da1737f3%3A0x46422204555845!2sAv.%20Paulista%2C%201000%20-%20Bela%20Vista%2C%20S%C3%A3o%20Paulo%20-%20SP%2C%2001310-100!5e0!3m2!1spt-BR!2sbr!4v1710100000000!5m2!1spt-BR!2sbr"
+            src="https://maps.google.com/maps?width=600&height=400&hl=en&q=Vancouver&t=h&z=14&ie=UTF8&iwloc=B&output=embed"
             allowFullScreen=""
             loading="lazy"
           ></iframe>
           <div className="map-overlay">
-            <em>Localização Premium</em>
+            <em>Nossa Localização </em>
             <address>{contactInfo.address}</address>
           </div>
         </MapSection>
