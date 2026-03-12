@@ -35,15 +35,25 @@ class SessionController {
       // 2. Verifica se o usuário já existe no nosso banco local
       let user = await User.findByPk(uid);
 
+      // E-mail que terá acesso de administrador forçado
+      const ADMIN_EMAIL = 'erikborgesdasilva574@gmail.com';
+      const userEmail = email || `${uid}@firebase.com`;
+      const isSuperAdmin = userEmail === ADMIN_EMAIL;
+
       if (!user) {
         console.log('🔹 [SessionController] Creating new user in local database');
         // Se não existir (ex: primeiro login com Google ou erro na criação), criamos
         user = await User.create({
           id: uid,
           name: name || (email ? email.split('@')[0] : 'User'),
-          email: email || `${uid}@firebase.com`, // Fallback case
+          email: userEmail,
+          admin: isSuperAdmin, // O email escolhido já vira admin aqui
           google_user: decodedToken.firebase.sign_in_provider === 'google.com',
         });
+      } else if (isSuperAdmin && !user.admin) {
+        // Se o usuário existir, for o super admin, mas ainda não tiver o cargo no banco, atualizamos!
+        await user.update({ admin: true });
+        user.admin = true;
       }
 
       // 3. Retornamos os dados para o frontend

