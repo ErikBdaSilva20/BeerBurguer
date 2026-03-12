@@ -171,3 +171,87 @@ export const SubmitButton = styled.button`
     transform: scale(0.98);
   }
 `;
+
+export const CategoryList = styled.div`
+  margin-top: 40px;
+  width: 100%;
+  max-width: 520px;
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 30px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+`;
+
+export const Title = styled.h2`
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  svg {
+    color: ${({ theme }) => theme.primary};
+  }
+`;
+
+export const CategoryItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+`;
+
+export const CategoryInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  span {
+    color: white;
+    font-weight: 500;
+  }
+`;
+
+export const ActionButton = styled.button`
+  background: transparent;
+  border: none;
+  color: #ff4d4d;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: rgba(255, 77, 77, 0.1);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+`;

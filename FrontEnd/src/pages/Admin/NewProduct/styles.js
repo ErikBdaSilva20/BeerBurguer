@@ -125,19 +125,25 @@ export const Select = styled.select`
   padding: 14px 16px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
+  background-color: rgba(255, 255, 255, 0.04);
   color: ${({ theme }) => theme.white};
   font-size: 0.95rem;
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(255,255,255,0.3)' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C2.185 5.355 2.403 5 2.808 5h10.384a.408.408 0 0 1 .357.712l-4.796 5.48a.408.408 0 0 1-.606 0z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: calc(100% - 16px) center;
 
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.primary};
     background-color: rgba(255, 238, 0, 0.04);
+  }
+
+  &:hover {
+    background-color: rgba(255, 238, 0, 0.06);
+  }
+
+  option {
+    background-color: #1a1a1a;
+    color: #fff;
   }
 `;
 

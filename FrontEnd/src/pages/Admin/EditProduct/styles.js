@@ -170,6 +170,7 @@ export const SubmitButton = styled.button`
 export const Deletion = styled.div`
   margin-top: 8px;
   width: 100%;
+  margin-top: 24px;
 `;
 
 export const DeleteButton = styled.button`

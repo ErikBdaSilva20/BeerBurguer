@@ -34,7 +34,7 @@ export const Container = styled.nav`
 
 export const Overlay = styled.div`
   display: none;
-  
+
   @media (max-width: 900px) {
     display: ${(props) => (props.$isOpen ? 'block' : 'none')};
     position: fixed;
@@ -126,6 +126,13 @@ export const Logo = styled.img`
 
   @media (max-width: 900px) {
     display: none;
+  }
+
+  &:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(255, 238, 0, 0.2);
+    border-radius: 100%;
   }
 `;
 
