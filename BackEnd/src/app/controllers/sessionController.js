@@ -1,4 +1,4 @@
-import admin from '../../config/firebase-admin.js';
+import admin, { initializationError } from '../../config/firebase-admin.js';
 import User from '../models/User.js';
 
 class SessionController {
@@ -24,7 +24,10 @@ class SessionController {
       // 1. Verifica o token no Firebase
       if (!admin.apps.length) {
         console.error('❌ Firebase Admin not initialized!');
-        return res.status(500).json({ error: 'Firebase Admin not initialized' });
+        return res.status(500).json({ 
+          error: 'Firebase Admin not initialized',
+          details: initializationError || 'Check server logs for setup errors'
+        });
       }
 
       const decodedToken = await admin.auth().verifyIdToken(token);

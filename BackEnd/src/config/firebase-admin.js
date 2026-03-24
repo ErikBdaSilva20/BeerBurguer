@@ -6,13 +6,19 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+let initializationError = null;
+
 try {
   let serviceAccount;
 
   if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     // Opção 1: variável de ambiente com JSON em string
-    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    console.log('🔑 Firebase Admin: carregando via variável de ambiente.');
+    try {
+      serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+      console.log('🔑 Firebase Admin: carregando via variável de ambiente.');
+    } catch (e) {
+      throw new Error(`FIREBASE_SERVICE_ACCOUNT contem JSON inválido: ${e.message}`);
+    }
 
   } else if (existsSync('/etc/secrets/serviceAccountKey.json')) {
     // Opção 2: Secret File do Render (montado em /etc/secrets/)
@@ -23,20 +29,24 @@ try {
     // Opção 3: arquivo local (desenvolvimento)
     const localPath = join(__dirname, '../../serviceAccountKey.json');
     if (!existsSync(localPath)) {
-      throw new Error(`Arquivo não encontrado: ${localPath}`);
+      throw new Error(`Arquivo de configuração não encontrado (localPath: ${localPath})`);
     }
     serviceAccount = JSON.parse(readFileSync(localPath, 'utf8'));
     console.log('🔑 Firebase Admin: carregando via arquivo local.');
   }
 
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
+  if (admin.apps.length === 0) {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+    console.log('✅ Firebase Admin initialized successfully.');
+  }
 
-  console.log('✅ Firebase Admin initialized successfully.');
 } catch (error) {
+  initializationError = error.message;
   console.error('❌ Error initializing Firebase Admin:', error.message);
-  console.warn('⚠️ Configure FIREBASE_SERVICE_ACCOUNT, Secret File em /etc/secrets/ ou serviceAccountKey.json local.');
+  console.warn('⚠️ Verifique as variáveis de ambiente FIREBASE_SERVICE_ACCOUNT ou o Secret File.');
 }
 
+export { initializationError };
 export default admin;
