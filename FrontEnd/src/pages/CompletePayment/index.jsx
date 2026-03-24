@@ -1,3 +1,6 @@
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
+import InfoIcon from '@mui/icons-material/Info';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../../hooks/CartContext';
@@ -14,38 +17,65 @@ import {
   Title,
 } from './styles';
 
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ErrorIcon from '@mui/icons-material/Error';
-import InfoIcon from '@mui/icons-material/Info';
-
+// Mapeamento de status do Asaas → conteúdo da tela
 const STATUS_CONTENT_MAP = {
-  approved: {
-    text: 'Pagamento realizado com sucesso!',
+  // Asaas retorna: RECEIVED | CONFIRMED | PENDING | OVERDUE | REFUNDED
+  RECEIVED: {
+    text: 'Pagamento recebido com sucesso! 🎉',
     iconColor: '#22c55e',
     icon: CheckCircleIcon,
     buttonText: 'Ver meus pedidos',
     url: '/meus-pedidos',
+    shouldCreateOrder: true,
   },
-  pending: {
-    text: 'Seu pagamento está pendente / em processamento.',
-    iconColor: '#64748b',
+  CONFIRMED: {
+    text: 'Pagamento confirmado com sucesso! 🎉',
+    iconColor: '#22c55e',
+    icon: CheckCircleIcon,
+    buttonText: 'Ver meus pedidos',
+    url: '/meus-pedidos',
+    shouldCreateOrder: true,
+  },
+  PENDING: {
+    text: 'Seu pagamento está em processamento.',
+    iconColor: '#facc15',
     icon: InfoIcon,
     buttonText: 'Ir para a home',
     url: '/',
+    shouldCreateOrder: false,
+  },
+  OVERDUE: {
+    text: 'O prazo do pagamento expirou.',
+    iconColor: '#ef4444',
+    icon: ErrorIcon,
+    buttonText: 'Voltar ao carrinho',
+    url: '/carrinho',
+    shouldCreateOrder: false,
+  },
+  // Parâmetro genérico de sucesso que o Asaas pode enviar via URL
+  success: {
+    text: 'Pagamento realizado com sucesso! 🎉',
+    iconColor: '#22c55e',
+    icon: CheckCircleIcon,
+    buttonText: 'Ver meus pedidos',
+    url: '/meus-pedidos',
+    shouldCreateOrder: true,
   },
   failure: {
-    text: 'Seu pagamento falhou ou foi rejeitado.',
+    text: 'Seu pagamento falhou ou foi recusado.',
     iconColor: '#ef4444',
     icon: ErrorIcon,
     buttonText: 'Voltar ao carrinho',
     url: '/carrinho',
+    shouldCreateOrder: false,
   },
   default: {
-    text: 'Eita, algo deu errado, tente novamente.',
+    text: 'Não foi possível confirmar seu pagamento.',
     iconColor: '#ef4444',
     icon: ErrorIcon,
     buttonText: 'Voltar ao carrinho',
     url: '/carrinho',
+    shouldCreateOrder: false,
   },
 };
 
@@ -58,45 +88,53 @@ export function CompletePayment() {
   const hasCreatedOrder = useRef(false);
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const paymentStatus = searchParams.get('collection_status') || searchParams.get('status');
-    const payment_id = searchParams.get('payment_id');
+    const params = new URLSearchParams(location.search);
 
-    if (paymentStatus) {
-      if (['approved', 'pending', 'failure'].includes(paymentStatus)) {
-        setStatus(paymentStatus);
-      }
-    }
+    // Asaas envia: ?status=success&paymentId=pay_xxx  (ou similar)
+    // Também suporta o padrão legado do Mercado Pago por compatibilidade
+    const rawStatus =
+      params.get('status') ||
+      params.get('collection_status') ||
+      'default';
 
-    if (payment_id) {
-      setPaymentId(payment_id);
+    const pid =
+      params.get('paymentId') ||
+      params.get('payment_id') ||
+      null;
 
-      if (paymentStatus === 'approved' && !hasCreatedOrder.current && cartProducts.length > 0) {
-        hasCreatedOrder.current = true;
+    // Normaliza status para a chave do mapa
+    const normalizedStatus = STATUS_CONTENT_MAP[rawStatus] ? rawStatus : 'default';
+    setStatus(normalizedStatus);
 
-        const products = cartProducts.map((product) => ({
-          id: product.id,
-          quantity: product.quantity,
-          price: product.price,
-        }));
+    if (pid) setPaymentId(pid);
 
-        api
-          .post(
-            '/orders',
-            {
-              products,
-              payment_intent_id: payment_id,
-              payment_method: 'mercado_pago',
-            },
-            { validateStatus: () => true }
-          )
-          .then(({ status }) => {
-            if (status === 200 || status === 201) {
-              clearCart();
-            }
-          })
-          .catch((err) => console.error('Erro ao registrar pedido: ', err));
-      }
+    const content = STATUS_CONTENT_MAP[normalizedStatus];
+
+    if (content?.shouldCreateOrder && pid && !hasCreatedOrder.current && cartProducts.length > 0) {
+      hasCreatedOrder.current = true;
+
+      const products = cartProducts.map((p) => ({
+        id: p.id,
+        quantity: p.quantity,
+        price: p.price,
+      }));
+
+      api
+        .post(
+          '/orders',
+          {
+            products,
+            payment_intent_id: pid,
+            payment_method: 'asaas',
+          },
+          { validateStatus: () => true }
+        )
+        .then(({ status: httpStatus }) => {
+          if (httpStatus === 200 || httpStatus === 201) {
+            clearCart();
+          }
+        })
+        .catch((err) => console.error('Erro ao registrar pedido:', err));
     }
   }, [location, cartProducts, clearCart]);
 

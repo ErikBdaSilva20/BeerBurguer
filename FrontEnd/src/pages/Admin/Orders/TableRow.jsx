@@ -145,7 +145,7 @@ export function Row({ row, setOrders, orders, activeStatus }) {
                   </Typography>
                   {row.payment_intent_id && (
                     <Typography variant="body2" className="Tc">
-                      <strong>ID Stripe:</strong> {row.payment_intent_id}
+                      <strong>ID Pagamento:</strong> {row.payment_intent_id}
                     </Typography>
                   )}
                 </Box>

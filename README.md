@@ -13,7 +13,7 @@
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Sequelize-336791?style=for-the-badge&logo=postgresql&logoColor=white"/>
   <img alt="MongoDB" src="https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white"/>
   <img alt="Firebase" src="https://img.shields.io/badge/Firebase-Auth-FFCA28?style=for-the-badge&logo=firebase&logoColor=black"/>
-  <img alt="MercadoPago" src="https://img.shields.io/badge/Mercado%20Pago-Payments-009EE3?style=for-the-badge&logo=mercadopago&logoColor=white"/>
+  <img alt="Asaas" src="https://img.shields.io/badge/Asaas-Payments-00BFA5?style=for-the-badge&logo=cashapp&logoColor=white"/>
 </p>
 
 ---
@@ -73,7 +73,7 @@
 
 ## 📌 Sobre o Projeto
 
-O **DevBurguer** é uma aplicação web **full-stack** de e-commerce para uma hamburgueria artesanal. O sistema oferece uma experiência completa tanto para os **clientes** — que navegam pelo cardápio, montam o carrinho e finalizam o pedido com pagamento via Mercado Pago (PIX ou Cartão de Crédito) — quanto para os **administradores**, que gerenciam produtos, categorias, pedidos e acompanham métricas de desempenho em um dashboard analítico.
+O **DevBurguer** é uma aplicação web **full-stack** de e-commerce para uma hamburgueria artesanal. O sistema oferece uma experiência completa tanto para os **clientes** — que navegam pelo cardápio, montam o carrinho e finalizam o pedido com pagamento via Asaas (PIX ou Cartão de Crédito) — quanto para os **administradores**, que gerenciam produtos, categorias, pedidos e acompanham métricas de desempenho em um dashboard analítico.
 
 O projeto foi desenvolvido com uma arquitetura **monorepo**, separando claramente o **FrontEnd** (React + Vite) do **BackEnd** (Node.js + Express), utilizando dois bancos de dados: **PostgreSQL** (dados estruturados: usuários, produtos, categorias) e **MongoDB** (pedidos, dados semi-estruturados).
 
@@ -87,7 +87,7 @@ O projeto foi desenvolvido com uma arquitetura **monorepo**, separando clarament
 - [x] Navegação pelo **cardápio** completo com filtros por categoria
 - [x] **Carrinho de compras** persistido no `localStorage`
 - [x] Checkout com seleção de método de pagamento: **PIX** ou **Cartão de Crédito**
-- [x] Integração com **Mercado Pago** para processamento do pagamento
+- [x] Integração com **Asaas** para processamento do pagamento
 - [x] Tela de **conclusão de pagamento** com feedback ao usuário
 - [x] Histórico de **Meus Pedidos**
 - [x] Página de **Contato**
@@ -133,7 +133,7 @@ O projeto foi desenvolvido com uma arquitetura **monorepo**, separando clarament
 | **Mongoose** | 9 | ODM para MongoDB |
 | **MongoDB** | Atlas | Banco de pedidos (dados semi-estruturados) |
 | **Firebase Admin SDK** | 13 | Verificação de tokens JWT |
-| **Mercado Pago SDK** | 2.x | Processamento de pagamentos |
+| **Asaas API** | v3 | Processamento de pagamentos |
 | **Multer** | 2.x | Upload de arquivos/imagens |
 | **Nodemailer** | 8 | Envio de e-mails |
 | **UUID** | 13 | Geração de IDs únicos |
@@ -174,7 +174,7 @@ graph TD
 
     subgraph External["☁️ Serviços Externos"]
         FIREBASE["🔥 Firebase Auth"]
-        MP["💳 Mercado Pago"]
+        MP["💳 Asaas Pagamentos"]
         CLOUDINARY["🖼️ Cloudinary (Imagens)"]
     end
 
@@ -220,7 +220,7 @@ src/
 │   ├── Home/             # Página inicial
 │   ├── Menu/             # Cardápio de produtos
 │   ├── Cart/             # Carrinho de compras
-│   ├── Checkout/         # Finalização do pedido e pagamento
+
 │   ├── CompletePayment/  # Tela pós-pagamento
 │   ├── MyOrders/         # Histórico de pedidos do cliente
 │   ├── Contact/          # Página de contato
@@ -254,7 +254,7 @@ src/
 │   │   ├── productController.js      # CRUD de produtos
 │   │   ├── sessionController.js      # Login e verificação de sessão
 │   │   ├── userController.js         # Cadastro de usuários
-│   │   └── mercadopago/
+│   │   └── asaas/
 │   │       └── CreatePaymentPreferenceController.js  # Integração MP
 │   ├── middlewares/
 │   │   ├── auth.js                   # Verificação do token Firebase JWT
@@ -328,7 +328,7 @@ src/
 | `products[].quantity` | Number | Quantidade comprada |
 | `products[].url` | String | URL da imagem do produto |
 | `status` | String | Status do pedido (ex: `Pendente`, `Em preparação`, `Entregue`) |
-| `payment_intent_id` | String | ID do pagamento no Mercado Pago |
+| `payment_intent_id` | String | ID do pagamento no Asaas |
 | `payment_method` | String | Método de pagamento (`pix` ou `credit_card`) |
 | `createdAt` | Date | Data de criação (automático) |
 | `updatedAt` | Date | Data de atualização (automático) |
@@ -355,9 +355,10 @@ flowchart TD
     J --> K[Acessa o Carrinho]
     K --> L[Vai para o Checkout]
     L --> M{Escolhe método de pagamento}
-    M --> |PIX| N[Cria preferência PIX no Mercado Pago]
-    M --> |Cartão de Crédito| O[Cria preferência Cartão no Mercado Pago]
-    N --> P[Redireciona para o Mercado Pago]
+    M --> |PIX| N[Cria QR Code PIX no Asaas]
+    M --> |Cartão de Crédito| O[Cria link checkout no Asaas]
+    N --> P[Exibe QR Code na Tela]
+    O --> P[Redireciona para checkout Asaas]
     O --> P
     P --> Q{Pagamento aprovado?}
     Q --> |Sim| R[Pedido criado no MongoDB]
@@ -433,7 +434,9 @@ sequenceDiagram
 | `GET` | `/categories` | CategoryController | Listar todas as categorias |
 | `POST` | `/orders` | OrderController | Criar um novo pedido |
 | `GET` | `/orders` | OrderController | Listar pedidos (do usuário ou todos se admin) |
-| `POST` | `/create-payment-preference` | CreatePaymentPreferenceController | Gerar preferência de pagamento no Mercado Pago |
+| `POST` | `/create-payment` | AsaasPaymentController | Gerar cobrança de pagamento no Asaas |
+| `GET` | `/payment-status/:id` | AsaasPaymentController | Consultar status do pagamento no Asaas |
+| `POST` | `/webhooks/asaas` | AsaasPaymentController | Webhook de confirmação de pagamento do Asaas |
 
 ### Autenticadas + Admin (requer `admin: true` no banco)
 | Método | Rota | Controller | Descrição |
@@ -489,8 +492,9 @@ O projeto utiliza **Firebase Authentication** como único provedor de identidade
 # Servidor
 PORT=3001
 
-# Mercado Pago
-MERCADOPAGO_ACCESS_TOKEN=seu_access_token_aqui
+# Asaas
+ASAAS_API_KEY=seu_access_token_aqui
+ASAAS_API_URL=https://sandbox.asaas.com/api/v3
 
 # MongoDB
 MONGO_URL=mongodb+srv://usuario:senha@cluster.mongodb.net/DevBurguer?retryWrites=true&w=majority
@@ -517,8 +521,7 @@ CLOUDINARY_API_SECRET=seu_api_secret
 # URL da API
 VITE_API_URL=http://localhost:3001
 
-# Mercado Pago
-VITE_MERCADOPAGO_PUBLIC_KEY=sua_public_key
+# Asaas Pagamentos (não requer chave pública no front)
 
 # Firebase
 VITE_FIREBASE_API_KEY=sua_api_key
@@ -542,7 +545,7 @@ VITE_FIREBASE_APP_ID=sua_app_id
 - [PostgreSQL](https://www.postgresql.org/) rodando localmente
 - [MongoDB](https://www.mongodb.com/) local ou conta no MongoDB Atlas
 - Conta no [Firebase Console](https://console.firebase.google.com/)
-- Conta no [Mercado Pago Developers](https://www.mercadopago.com.br/developers/panel)
+- Conta no [Asaas Developers](https://sandbox.asaas.com/)
 
 ### 1. Clone o repositório
 
@@ -584,7 +587,7 @@ pnpm install
 
 # Configure as variáveis de ambiente
 cp .env.example .env
-# Edite o arquivo .env com suas credenciais do Firebase e Mercado Pago
+# Edite o arquivo .env com suas credenciais do Firebase e Asaas
 
 # Inicie o servidor de desenvolvimento
 pnpm dev
@@ -606,7 +609,7 @@ O projeto foi projetado para ser hospedado nas seguintes plataformas:
 | **MongoDB** | [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) | Cluster na nuvem |
 | **Imagens** | [Cloudinary](https://cloudinary.com/) | Storage de imagens em produção |
 | **Autenticação** | [Firebase](https://firebase.google.com/) | Auth + Admin SDK |
-| **Pagamentos** | [Mercado Pago](https://www.mercadopago.com.br/developers) | PIX + Cartão |
+| **Pagamentos** | [Asaas](https://sandbox.asaas.com/) | PIX + Cartão |
 
 > 📖 Consulte o [DEPLOY_GUIDE.md](./DEPLOY_GUIDE.md) para um guia passo a passo completo do processo de deploy.
 

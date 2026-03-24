@@ -3,7 +3,7 @@ import multer from 'multer';
 import DashboardController from './app/controllers/DashboardController.js';
 import OrderController from './app/controllers/orderController.js';
 import CategoryController from './app/controllers/categoryController.js';
-import CreatePaymentPreferenceController from './app/controllers/mercadopago/CreatePaymentPreferenceController.js';
+import AsaasPaymentController from './app/controllers/asaas/AsaasPaymentController.js';
 import ProductController from './app/controllers/productController.js';
 import SessionController from './app/controllers/sessionController.js';
 import UserController from './app/controllers/userController.js';
@@ -17,6 +17,10 @@ const upload = multer(multerConfig);
 
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
+
+// Webhook do Asaas — deve ficar ANTES do authMiddleware (Asaas não envia token)
+routes.post('/webhooks/asaas', AsaasPaymentController.webhook);
+
 routes.use(authMiddleware);
 routes.get('/session-verify', SessionController.verify);
 
@@ -36,7 +40,8 @@ routes.put('/orders/:id', adminMiddleware, OrderController.update);
 
 routes.get('/dashboard', adminMiddleware, DashboardController.index);
 
-// Rota de pagamentos via Mercado Pago
-routes.post('/create-payment-preference', CreatePaymentPreferenceController.store);
+// Rotas de pagamento via Asaas
+routes.post('/create-payment', AsaasPaymentController.store);
+routes.get('/payment-status/:id', AsaasPaymentController.status);
 
 export default routes;

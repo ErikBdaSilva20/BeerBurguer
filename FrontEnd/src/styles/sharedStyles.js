@@ -213,7 +213,7 @@ export const AuthInputContainer = styled.div`
 `;
 
 /* ======================================
-   GLASS SHARED STYLES (Checkout / CompletePayment)
+ // --- GLASS SHARED STYLES (CompletePayment) ---
 ====================================== */
 export const GlassContainer = styled.div`
   min-height: 100vh;
