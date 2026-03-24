@@ -72,6 +72,20 @@ class SessionController {
         return res.status(401).json({ error: 'Invalid or expired token', details: error.message });
       }
 
+      // Procura por erros específicos de migração/banco de dados
+      if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+        return res.status(400).json({ error: 'Database validation error', details: error.errors.map(e => e.message) });
+      }
+
+      if (error.name === 'SequelizeDatabaseError') {
+        console.error('💾 Database Error Details:', error.original);
+        return res.status(500).json({ 
+          error: 'Database error', 
+          details: error.message,
+          hint: 'Verifique se as migrações (como UUID para STRING) foram aplicadas em produção.' 
+        });
+      }
+
       return res.status(500).json({ error: 'Internal server error', details: error.message });
     }
   }

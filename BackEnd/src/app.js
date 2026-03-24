@@ -30,8 +30,28 @@ app.use(routes);
 
 // Middleware de tratamento de erros genérico
 app.use((err, _req, res, _next) => {
-  console.error(err);
-  return res.status(500).json({ message: 'Erro interno do servidor' });
+  console.error('🔥 Generic Error Handler caught:', err);
+
+  // If the error is from Firebase verification
+  if (err.code && err.code.startsWith('auth/')) {
+    return res.status(401).json({ error: 'Invalid or expired token', details: err.message });
+  }
+
+  // Procura por erros específicos de migração/banco de dados
+  if (err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError') {
+    return res.status(400).json({ error: 'Database validation error', details: err.errors.map(e => e.message) });
+  }
+
+  if (err.name === 'SequelizeDatabaseError') {
+    console.error('💾 Database Error Details:', err.original);
+    return res.status(500).json({
+      error: 'Database error',
+      details: err.message,
+      hint: 'Possible migration issue or schema mismatch'
+    });
+  }
+
+  return res.status(500).json({ error: 'Internal server error', details: err.message });
 });
 
 export default app;
