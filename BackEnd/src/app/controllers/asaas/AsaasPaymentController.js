@@ -83,6 +83,15 @@ class AsaasPaymentController {
     const totalWithDelivery = +(totalValue + deliveryFee).toFixed(2);
 
     try {
+      // 🚀 [DEMO MODE] Pagamento desabilitado para demonstração em produção
+      return response.status(403).json({
+        error: 'Finalização de pedido desabilitada nesta versão de demonstração. Nenhuma cobrança real será feita.',
+      });
+
+      /* ====================================================================
+         CÓDIGO DE PAGAMENTO REAL (COMENTADO PARA SEGURANÇA NA DEMONSTRAÇÃO)
+         ====================================================================
+      
       // 1. Garante que o cliente existe no Asaas
       const customerId = await findOrCreateCustomer(customer);
 
@@ -133,6 +142,8 @@ class AsaasPaymentController {
         value: charge.value,
         checkoutUrl: charge.invoiceUrl, // link de pagamento do Asaas
       });
+
+      ==================================================================== */
     } catch (error) {
       console.error('Erro ao criar cobrança no Asaas:', error?.response?.data || error.message);
       return response.status(500).json({

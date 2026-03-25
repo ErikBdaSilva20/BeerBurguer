@@ -41,7 +41,23 @@ export function CartResume() {
 
   // Chamado quando o usuário preenche os dados no CustomerModal
   const handleCustomerSubmit = async (customer) => {
+    // 🚀 VERSÃO DE DEMONSTRAÇÃO: PAGAMENTO DESABILITADO
+    toast.info(
+      '🚀 Esta é uma versão de demonstração em produção. O checkout real foi desabilitado para segurança. Nenhum valor será cobrado.',
+      {
+        autoClose: 60000, // 1 minuto
+        position: 'top-center',
+        theme: 'colored',
+      }
+    );
+
     setShowCustomerModal(false);
+    return; // Interrompe o processo para não chamar o backend
+
+    /* ====================================================================
+       PROCESSO DE PAGAMENTO REAL (COMENTADO PARA SEGURANÇA NA DEMO)
+       ====================================================================
+
     setLoading(true);
 
     const products = cartProducts.map((p) => ({
@@ -70,6 +86,7 @@ export function CartResume() {
     } finally {
       setLoading(false);
     }
+    ==================================================================== */
   };
 
   // Chamado quando o polling confirma pagamento Pix
